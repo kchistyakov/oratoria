@@ -38,3 +38,10 @@ externalPort = 3001
 
 [nix]
 channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+ADMIN_EMAIL = "chistyakov.kd@gmail.com"
+ADMIN_SECRET = "65d9896a963cd7b9da5aeb32cb4a524ee34f0859e29d2f0bf33d2ce0f671cbd9"
+ADMIN_PASSWORD = "kos13tA!"

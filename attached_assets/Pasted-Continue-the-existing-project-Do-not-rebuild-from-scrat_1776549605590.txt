@@ -1,0 +1,126 @@
+Continue the existing project. Do not rebuild from scratch.
+
+Implement the first working version of the custom admin panel for the Oratoria MVP.
+
+Context:
+- The public site, events pages, event registration flow, and newsletter subscription already exist.
+- Keep the current architecture unchanged.
+- Keep everything portable for future migration away from Replit.
+- Do not introduce Replit-only auth or vendor lock-in features.
+- Do not redesign the public website unless required for admin integration.
+
+Admin MVP requirements:
+1. Dashboard
+2. Events list
+3. Create event
+4. Edit event
+5. Delete event
+6. Registrations list
+7. Registration status update
+8. Export registrations to CSV
+9. Edit main site texts
+10. Edit main site images in a simple portable way
+11. Edit FAQ
+12. View newsletter subscribers
+
+Admin routes:
+- /admin
+- /admin/login
+- /admin/events
+- /admin/events/new
+- /admin/events/[id]
+- /admin/registrations
+- /admin/content
+- /admin/faq
+- /admin/subscribers
+
+Authentication requirements:
+- implement a very simple portable admin login
+- do not use Replit-only auth
+- use environment variables for admin credentials or a secure portable approach
+- use session-based protection for admin routes
+- keep it simple and beginner-friendly
+- do not implement roles or complex permission systems
+
+Recommended approach:
+- ADMIN_EMAIL and ADMIN_PASSWORD in env for this MVP
+- protected admin session via secure cookies
+- all admin routes must require login
+
+Events admin:
+- list all events
+- create new event
+- edit existing event
+- delete event
+- fields:
+  - title
+  - description
+  - dateTime
+  - place
+  - price
+  - isPublished
+- keep forms simple and clear in Russian
+
+Registrations admin:
+- show registrations table
+- include:
+  - createdAt
+  - event
+  - phone
+  - email
+  - marketingConsent
+  - status
+- statuses:
+  - new
+  - confirmed
+  - cancelled
+  - attended
+  - no_show
+- allow status change from the UI
+- add CSV export
+
+Content admin:
+- make key homepage texts editable
+- make FAQ editable
+- support editing core content used on:
+  - hero
+  - about
+  - benefits
+  - testimonials
+  - contacts/footer if already wired
+- use SiteContent records for editable content keys
+- if a field is not yet DB-driven, connect it now cleanly
+
+Images admin:
+- keep this portable and simple
+- do not build a full upload system yet
+- use editable image URL fields for main site images
+- if helpful, store those image URLs in SiteContent
+
+Subscribers admin:
+- show newsletter subscribers list
+- include email and createdAt
+
+UX requirements:
+- admin UI should be simple, clean, and understandable for a non-technical user
+- Russian interface text
+- functional over fancy
+- consistent navigation between admin pages
+- basic empty states and success/error states
+
+Technical requirements:
+- preserve existing database and architecture where possible
+- update Prisma schema only if necessary
+- keep code clean and minimal
+- avoid unnecessary dependencies
+- ensure admin pages are protected
+- ensure forms work
+- ensure CSV export works
+- run build and fix errors
+
+At the end:
+- summarize admin features implemented
+- describe the auth approach
+- list editable content keys
+- list any schema changes
+- confirm build passes

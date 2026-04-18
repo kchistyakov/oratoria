@@ -53,9 +53,78 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 | `SiteContent` | id, key, title, body, updatedAt |
 | `FaqItem` | id, question, answer, sortOrder, isPublished |
 
+## Oratoria App Router Structure
+
+```
+app/
+  layout.tsx                  ← root (html/body only)
+  globals.css
+  (public)/                   ← route group: Header + Footer via nested layout
+    layout.tsx
+    page.tsx                  ← landing page
+    admin/page.tsx            ← placeholder
+    legal/privacy/page.tsx
+    legal/terms/page.tsx
+  panel/                      ← admin panel (not obvious URL)
+    layout.tsx                ← sidebar (shown only when session cookie valid)
+    page.tsx                  ← dashboard
+    login/page.tsx            ← login form (Client Component)
+    actions.ts                ← all admin server actions
+    events/page.tsx           ← events list
+    events/new/page.tsx       ← create event
+    events/[id]/page.tsx      ← edit event
+    events/_components/       ← EventForm (client), DeleteEventButton (client)
+    registrations/page.tsx    ← registrations table + status update
+    registrations/export/route.ts  ← CSV download route
+    content/page.tsx          ← SiteContent editor
+    faq/page.tsx              ← FAQ editor
+    subscribers/page.tsx      ← newsletter subscribers list
+  actions.ts                  ← public server actions (registration, newsletter)
+middleware.ts                 ← protects /panel/* → redirects to /panel/login
+lib/admin-auth.ts             ← HMAC session token utilities
+```
+
+## Admin Panel Auth
+
+- URL: `/panel` (non-obvious, not `/admin`)
+- Session: HTTP-only cookie `ora_panel` = HMAC-SHA256(ADMIN_SECRET, "oratoria-admin-v1")
+- Env vars: `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_SECRET`
+- Middleware protects all `/panel/*` routes except `/panel/login`
+- No DB users — stateless session token derived from ADMIN_SECRET
+- Session duration: 30 days (cookie maxAge)
+
+## Admin Panel Routes
+
+| Route | Feature |
+|-------|---------|
+| `/panel/login` | Login form |
+| `/panel` | Dashboard (event/registration/subscriber counts) |
+| `/panel/events` | List all events with edit/delete |
+| `/panel/events/new` | Create event form |
+| `/panel/events/[id]` | Edit event form |
+| `/panel/registrations` | Registrations table + status select + CSV export |
+| `/panel/registrations/export` | CSV download (BOM-prefixed UTF-8) |
+| `/panel/content` | Edit SiteContent records + add new keys |
+| `/panel/faq` | Edit/add/delete FAQ items |
+| `/panel/subscribers` | Newsletter subscribers list |
+
+## Editable SiteContent Keys (Content Admin)
+
+| Key | Description |
+|-----|-------------|
+| `hero_title` | Main H1 on landing page |
+| `hero_subtitle` | Subtitle paragraph |
+| `slogan` | Small uppercase tagline above H1 |
+| `about_title` | "О клубе" section heading |
+| `about_body` | "О клубе" section text |
+| `for_whom_title` | "Для кого" section heading |
+| `for_whom_body` | "Для кого" section text |
+
+New keys can be added via the "Добавить новое поле" form in the content admin.
+
 ## Oratoria Landing Page Sections
 
-`app/page.tsx` is an async Server Component. It fetches events, FAQ, and SiteContent from Prisma in parallel, then renders:
+`app/(public)/page.tsx` is an async Server Component. It fetches events, FAQ, and SiteContent from Prisma in parallel, then renders:
 
 | Section | Component | Data source |
 |---------|-----------|-------------|
@@ -81,7 +150,7 @@ All DB-driven sections have inline fallbacks so the page renders if the DB is un
 
 Server action: `registerForEvent` in `app/actions.ts`:
 - Validates phone (10–12 digits), email (regex)
-- Checks event exists via Prisma
+- Checks event exists, is published, and dateTime ≥ now
 - Creates `Registration` with `status: "new"`
 - Catches Prisma P2002 (unique constraint `@@unique([email, eventId])`) → returns `duplicate: true`
 
@@ -93,12 +162,12 @@ Server action: `registerForEvent` in `app/actions.ts`:
 - Telegram: https://t.me/@mashaclubspb
 - VK: placeholder (not yet active)
 
-## Oratoria Routes
+## Oratoria Public Routes
 
 | Route | Description |
 |-------|-------------|
 | `/` | Full public landing page (8 sections) |
-| `/admin` | Admin panel placeholder |
+| `/admin` | Placeholder ("раздел в разработке") |
 | `/legal/privacy` | Privacy policy |
 | `/legal/terms` | Terms of service |
 
