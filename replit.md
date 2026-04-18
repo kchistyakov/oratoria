@@ -53,11 +53,34 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 | `SiteContent` | id, key, title, body, updatedAt |
 | `FaqItem` | id, question, answer, sortOrder, isPublished |
 
+## Oratoria Landing Page Sections
+
+`app/page.tsx` is an async Server Component. It fetches events, FAQ, and SiteContent from Prisma in parallel, then renders:
+
+| Section | Component | Data source |
+|---------|-----------|-------------|
+| Hero | `HeroSection` | `SiteContent` keys: `hero_title`, `hero_subtitle`, `slogan` + next `Event` |
+| Events | `EventsSection` | `Event` model (isPublished=true, dateTime≥now, asc, take 4) |
+| Benefits | `BenefitsSection` | Static (4 items hardcoded) |
+| About | `AboutSection` | `SiteContent` keys: `about_title`, `about_body`, `for_whom_title`, `for_whom_body` |
+| Testimonials | `TestimonialsSection` | Hardcoded placeholder quotes |
+| FAQ | `FaqSection` | `FaqItem` model (isPublished=true, orderBy sortOrder) |
+| Newsletter | `NewsletterSection` | Server Action → `NewsletterSubscriber` upsert |
+| Footer | `Footer` (layout) | Static: SPb, +79941021321, Telegram, VK placeholder, legal links |
+
+All DB-driven sections have inline fallbacks so the page renders if the DB is unavailable.
+
+### Contact info
+- City: Санкт-Петербург
+- Phone: +79941021321
+- Telegram: https://t.me/@mashaclubspb
+- VK: placeholder (not yet active)
+
 ## Oratoria Routes
 
 | Route | Description |
 |-------|-------------|
-| `/` | Public home page (hero, events, FAQ) |
+| `/` | Full public landing page (8 sections) |
 | `/admin` | Admin panel placeholder |
 | `/legal/privacy` | Privacy policy |
 | `/legal/terms` | Terms of service |
