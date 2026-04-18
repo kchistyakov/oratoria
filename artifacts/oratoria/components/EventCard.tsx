@@ -127,7 +127,8 @@ export default function EventCard({
                 type="tel"
                 placeholder="Телефон"
                 autoComplete="tel"
-                className={`w-full px-4 py-2.5 rounded-xl border text-sm bg-white focus:outline-none focus:border-[#40916c] transition-colors ${
+                disabled={pending}
+                className={`w-full px-4 py-2.5 rounded-xl border text-sm bg-white focus:outline-none focus:border-[#40916c] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                   state.fieldErrors.phone
                     ? "border-red-400 bg-red-50"
                     : "border-[#e9dcc9]"
@@ -147,7 +148,8 @@ export default function EventCard({
                 type="email"
                 placeholder="Email"
                 autoComplete="email"
-                className={`w-full px-4 py-2.5 rounded-xl border text-sm bg-white focus:outline-none focus:border-[#40916c] transition-colors ${
+                disabled={pending}
+                className={`w-full px-4 py-2.5 rounded-xl border text-sm bg-white focus:outline-none focus:border-[#40916c] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                   state.fieldErrors.email
                     ? "border-red-400 bg-red-50"
                     : "border-[#e9dcc9]"

@@ -114,11 +114,27 @@ export async function registerForEvent(
 
   // ── Database write ──────────────────────────────────────────────────────────
   try {
-    // Verify the event still exists before creating the registration
+    // Verify the event exists, is published, and hasn't passed
     const event = await prisma.event.findUnique({ where: { id: eventId } });
     if (!event) {
       return {
         error: "Мероприятие не найдено. Попробуйте обновить страницу.",
+        fieldErrors: {},
+        success: false,
+        duplicate: false,
+      };
+    }
+    if (!event.isPublished) {
+      return {
+        error: "Мероприятие недоступно для записи.",
+        fieldErrors: {},
+        success: false,
+        duplicate: false,
+      };
+    }
+    if (event.dateTime < new Date()) {
+      return {
+        error: "Регистрация на это мероприятие уже закрыта.",
         fieldErrors: {},
         success: false,
         duplicate: false,
