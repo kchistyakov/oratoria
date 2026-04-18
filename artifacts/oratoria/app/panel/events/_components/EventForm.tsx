@@ -11,11 +11,15 @@ interface Props {
   ) => Promise<{ error?: string }>;
 }
 
-function formatLocalDatetime(date: Date): string {
+// Moscow is UTC+3. We always display and interpret event times in Moscow time.
+function toMoscowDatetimeLocal(utcDate: Date): string {
   const pad = (n: number) => String(n).padStart(2, "0");
+  // Shift UTC to Moscow by adding 3 h, then read UTC getters (which now give Moscow values)
+  const ms = utcDate.getTime() + 3 * 60 * 60 * 1000;
+  const d = new Date(ms);
   return (
-    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
-    `T${pad(date.getHours())}:${pad(date.getMinutes())}`
+    `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}` +
+    `T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`
   );
 }
 
@@ -63,14 +67,16 @@ export default function EventForm({ event, action }: Props) {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-[#1c1c1c] mb-1.5">
-            Дата и время <span className="text-red-500">*</span>
+            Дата и время{" "}
+            <span className="text-red-500">*</span>
+            <span className="text-[#aaa] font-normal ml-1">(UTC+3, Москва)</span>
           </label>
           <input
             name="dateTime"
             type="datetime-local"
             required
             defaultValue={
-              event ? formatLocalDatetime(new Date(event.dateTime)) : ""
+              event ? toMoscowDatetimeLocal(new Date(event.dateTime)) : ""
             }
             disabled={pending}
             className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#2d6a4f] transition-colors disabled:opacity-50"

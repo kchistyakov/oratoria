@@ -1,16 +1,7 @@
-import Link from "next/link";
 import { cookies } from "next/headers";
 import { COOKIE_NAME, verifySession } from "@/lib/admin-auth";
 import { logoutAction } from "./actions";
-
-const navLinks = [
-  { href: "/panel", label: "Дашборд" },
-  { href: "/panel/events", label: "Мероприятия" },
-  { href: "/panel/registrations", label: "Регистрации" },
-  { href: "/panel/content", label: "Тексты сайта" },
-  { href: "/panel/faq", label: "FAQ" },
-  { href: "/panel/subscribers", label: "Подписчики" },
-];
+import SidebarNavLinks from "./_components/SidebarNavLinks";
 
 function Sidebar() {
   return (
@@ -24,17 +15,7 @@ function Sidebar() {
         </span>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="flex items-center px-3 py-2.5 rounded-lg text-sm text-[#ccc] hover:bg-white/10 hover:text-white transition-colors"
-          >
-            {link.label}
-          </Link>
-        ))}
-      </nav>
+      <SidebarNavLinks />
 
       <div className="px-3 py-4 border-t border-white/10">
         <form action={logoutAction}>

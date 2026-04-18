@@ -64,12 +64,14 @@ export async function createEventAction(
     return { error: "Заполните все обязательные поля" };
   }
 
-  const dateTime = new Date(dateTimeRaw);
+  // datetime-local gives "YYYY-MM-DDTHH:MM"; treat it as Moscow time (UTC+3).
+  const dt = dateTimeRaw.slice(0, 16);
+  const dateTime = new Date(dt + ":00+03:00");
   if (isNaN(dateTime.getTime())) {
     return { error: "Некорректная дата" };
   }
 
-  const price = priceRaw ? parseInt(priceRaw, 10) : 0;
+  const price = Math.max(0, parseInt(priceRaw ?? "0", 10) || 0);
 
   await prisma.event.create({
     data: { title, description, dateTime, place, price, isPublished },
@@ -99,12 +101,14 @@ export async function updateEventAction(
     return { error: "Заполните все обязательные поля" };
   }
 
-  const dateTime = new Date(dateTimeRaw);
+  // datetime-local gives "YYYY-MM-DDTHH:MM"; treat it as Moscow time (UTC+3).
+  const dt = dateTimeRaw.slice(0, 16);
+  const dateTime = new Date(dt + ":00+03:00");
   if (isNaN(dateTime.getTime())) {
     return { error: "Некорректная дата" };
   }
 
-  const price = priceRaw ? parseInt(priceRaw, 10) : 0;
+  const price = Math.max(0, parseInt(priceRaw ?? "0", 10) || 0);
 
   await prisma.event.update({
     where: { id },
@@ -118,16 +122,23 @@ export async function updateEventAction(
 
 export async function deleteEventAction(id: string) {
   await requireAdmin();
+  // Delete registrations first to satisfy the FK constraint.
+  await prisma.registration.deleteMany({ where: { eventId: id } });
   await prisma.event.delete({ where: { id } });
   revalidatePath("/panel/events");
+  revalidatePath("/panel/registrations");
   revalidatePath("/");
   redirect("/panel/events");
 }
+
+const VALID_STATUSES = ["new", "confirmed", "cancelled", "attended", "no_show"];
 
 export async function updateRegistrationStatusAction(formData: FormData) {
   await requireAdmin();
   const id = formData.get("id") as string;
   const status = formData.get("status") as string;
+
+  if (!id || !VALID_STATUSES.includes(status)) return;
 
   await prisma.registration.update({ where: { id }, data: { status } });
   revalidatePath("/panel/registrations");
@@ -150,6 +161,7 @@ export async function updateContentAction(formData: FormData): Promise<void> {
 
   revalidatePath("/panel/content");
   revalidatePath("/");
+  redirect("/panel/content?saved=1");
 }
 
 export async function createFaqAction(formData: FormData): Promise<void> {
