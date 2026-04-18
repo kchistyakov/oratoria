@@ -48,7 +48,7 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 | Model | Fields |
 |-------|--------|
 | `Event` | id, title, description, dateTime, place, price, isPublished, createdAt, updatedAt |
-| `Registration` | id, phone, email, eventId, marketingConsent, status, createdAt |
+| `Registration` | id, phone (required), email, eventId, marketingConsent, status (default "new"), createdAt — unique(email, eventId) |
 | `NewsletterSubscriber` | id, email, createdAt |
 | `SiteContent` | id, key, title, body, updatedAt |
 | `FaqItem` | id, question, answer, sortOrder, isPublished |
@@ -60,7 +60,7 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 | Section | Component | Data source |
 |---------|-----------|-------------|
 | Hero | `HeroSection` | `SiteContent` keys: `hero_title`, `hero_subtitle`, `slogan` + next `Event` |
-| Events | `EventsSection` | `Event` model (isPublished=true, dateTime≥now, asc, take 4) |
+| Events | `EventsSection` + `EventCard` (Client) | `Event` model (isPublished=true, dateTime≥now, asc, take 4) + inline registration form |
 | Benefits | `BenefitsSection` | Static (4 items hardcoded) |
 | About | `AboutSection` | `SiteContent` keys: `about_title`, `about_body`, `for_whom_title`, `for_whom_body` |
 | Testimonials | `TestimonialsSection` | Hardcoded placeholder quotes |
@@ -69,6 +69,23 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 | Footer | `Footer` (layout) | Static: SPb, +79941021321, Telegram, VK placeholder, legal links |
 
 All DB-driven sections have inline fallbacks so the page renders if the DB is unavailable.
+
+### Event Registration Flow
+
+`EventCard` (`components/EventCard.tsx`) is a Client Component. State machine per card:
+- **idle** — "Записаться" button visible
+- **open** — inline form expanded (phone, email, marketingConsent checkbox, submit + cancel)
+- **success** — green banner "Вы зарегистрированы!" replaces the form
+- **duplicate** — teal banner "Вы уже зарегистрированы" (same email+eventId already in DB)
+- **validation error** — field-level messages, form stays open
+
+Server action: `registerForEvent` in `app/actions.ts`:
+- Validates phone (10–12 digits), email (regex)
+- Checks event exists via Prisma
+- Creates `Registration` with `status: "new"`
+- Catches Prisma P2002 (unique constraint `@@unique([email, eventId])`) → returns `duplicate: true`
+
+`EventsSection` (Server Component) serializes `Date` fields to strings before passing to `EventCard` props.
 
 ### Contact info
 - City: Санкт-Петербург

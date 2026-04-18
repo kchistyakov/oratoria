@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Upcoming club events. isPublished controls landing-page visibility.
 model Event {
   id          String   @id @default(cuid())
   title       String
@@ -21,24 +22,32 @@ model Event {
   registrations Registration[]
 }
 
+// v1.0.1: phone made required; status default changed to "new";
+//         @@unique([email, eventId]) prevents duplicate registrations
+//         for the same person + event pair at the database level.
 model Registration {
-  id                String   @id @default(cuid())
-  phone             String?
-  email             String
-  eventId           String
-  marketingConsent  Boolean  @default(false)
-  status            String   @default("pending")
-  createdAt         DateTime @default(now())
+  id               String   @id @default(cuid())
+  phone            String
+  email            String
+  eventId          String
+  marketingConsent Boolean  @default(false)
+  // Lifecycle: new → confirmed | cancelled
+  status           String   @default("new")
+  createdAt        DateTime @default(now())
 
   event Event @relation(fields: [eventId], references: [id])
+
+  @@unique([email, eventId])
 }
 
+// Email-only newsletter opt-in. Upsert keeps it idempotent.
 model NewsletterSubscriber {
   id        String   @id @default(cuid())
   email     String   @unique
   createdAt DateTime @default(now())
 }
 
+// Key/value store for editable landing-page copy (hero, about, etc.).
 model SiteContent {
   id        String   @id @default(cuid())
   key       String   @unique
@@ -47,6 +56,7 @@ model SiteContent {
   updatedAt DateTime @updatedAt
 }
 
+// FAQ items rendered in the FAQ section. sortOrder controls display order.
 model FaqItem {
   id          String   @id @default(cuid())
   question    String
