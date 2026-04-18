@@ -1,13 +1,22 @@
 "use server";
 
+// Server actions for form submissions across the landing page.
+// All actions follow the useActionState signature: (prevState, formData) => Promise<State>
+
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
+
+// ─── Newsletter ───────────────────────────────────────────────────────────────
 
 export type NewsletterState = {
   error: string | null;
   success: boolean;
 };
 
+/**
+ * Upserts an email into the NewsletterSubscriber table.
+ * Idempotent — subscribing with an existing email is silently accepted.
+ */
 export async function subscribeToNewsletter(
   _prevState: NewsletterState,
   formData: FormData
@@ -30,6 +39,16 @@ export async function subscribeToNewsletter(
   }
 }
 
+// ─── Event Registration (added in v1.0.1) ────────────────────────────────────
+
+/**
+ * Shape of the state passed to/from useActionState in EventCard.
+ *
+ * - fieldErrors: per-field validation messages (shown inline in the form)
+ * - duplicate:   true when the same email is already registered for this event
+ * - success:     true when the registration was saved successfully
+ * - error:       generic server-side error message
+ */
 export type RegistrationState = {
   error: string | null;
   fieldErrors: {
@@ -40,6 +59,20 @@ export type RegistrationState = {
   duplicate: boolean;
 };
 
+/**
+ * Validates and saves an event registration.
+ *
+ * Validation rules:
+ *   - phone: required, 10–12 digits (strips non-digit characters before counting)
+ *   - email: required, basic RFC-ish regex
+ *
+ * Duplicate detection:
+ *   The Registration table has @@unique([email, eventId]).
+ *   On Prisma P2002 (unique constraint violation) we return duplicate=true
+ *   so the UI can show a friendly message instead of a generic error.
+ *
+ * Registration status is set to "new" on creation.
+ */
 export async function registerForEvent(
   _prevState: RegistrationState,
   formData: FormData
@@ -49,6 +82,7 @@ export async function registerForEvent(
   const marketingConsent = formData.get("marketingConsent") === "on";
   const eventId = ((formData.get("eventId") as string) ?? "").trim();
 
+  // ── Field-level validation ──────────────────────────────────────────────────
   const fieldErrors: RegistrationState["fieldErrors"] = {};
 
   if (!phone) {
@@ -68,6 +102,7 @@ export async function registerForEvent(
     return { error: null, fieldErrors, success: false, duplicate: false };
   }
 
+  // ── Guard: eventId must be present ─────────────────────────────────────────
   if (!eventId) {
     return {
       error: "Мероприятие не найдено. Попробуйте обновить страницу.",
@@ -77,7 +112,9 @@ export async function registerForEvent(
     };
   }
 
+  // ── Database write ──────────────────────────────────────────────────────────
   try {
+    // Verify the event still exists before creating the registration
     const event = await prisma.event.findUnique({ where: { id: eventId } });
     if (!event) {
       return {
@@ -100,6 +137,7 @@ export async function registerForEvent(
 
     return { error: null, fieldErrors: {}, success: true, duplicate: false };
   } catch (e) {
+    // P2002 = unique constraint violation → same email already registered for this event
     if (
       e instanceof Prisma.PrismaClientKnownRequestError &&
       e.code === "P2002"

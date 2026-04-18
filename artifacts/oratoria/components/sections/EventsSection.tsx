@@ -1,3 +1,15 @@
+/**
+ * EventsSection — Server Component
+ *
+ * Renders the "Ближайшие события" grid on the landing page.
+ *
+ * v1.0.1: Each event card is now a Client Component (EventCard) that
+ * handles the inline registration form. Because Server Components cannot
+ * pass non-serializable values (e.g. Date objects) to Client Components
+ * as props, this component pre-formats all date/time/price fields into
+ * plain strings via the serializeEvent helper before passing them down.
+ */
+
 import type { Event } from "@prisma/client";
 import { formatEventDate, formatEventTime, formatPrice } from "@/lib/format";
 import EventCard from "@/components/EventCard";
@@ -6,6 +18,10 @@ interface Props {
   events: Event[];
 }
 
+/**
+ * Converts a Prisma Event record into a plain object safe for Client Component props.
+ * Date fields are formatted to Russian locale strings; no raw Date objects are passed.
+ */
 function serializeEvent(e: Event) {
   return {
     id: e.id,
@@ -47,6 +63,7 @@ export default function EventsSection({ events }: Props) {
         ) : (
           <div className="grid md:grid-cols-2 gap-6">
             {events.map((event) => (
+              // Pass serialized props — no Date objects cross the server/client boundary
               <EventCard key={event.id} {...serializeEvent(event)} />
             ))}
           </div>
