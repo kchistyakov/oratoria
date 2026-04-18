@@ -22,15 +22,17 @@ model Event {
 }
 
 model Registration {
-  id                String   @id @default(cuid())
-  phone             String?
-  email             String
-  eventId           String
-  marketingConsent  Boolean  @default(false)
-  status            String   @default("pending")
-  createdAt         DateTime @default(now())
+  id               String   @id @default(cuid())
+  phone            String
+  email            String
+  eventId          String
+  marketingConsent Boolean  @default(false)
+  status           String   @default("new")
+  createdAt        DateTime @default(now())
 
   event Event @relation(fields: [eventId], references: [id])
+
+  @@unique([email, eventId])
 }
 
 model NewsletterSubscriber {
