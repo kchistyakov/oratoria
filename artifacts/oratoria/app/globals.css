@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+:root {
+  --color-brand: #1a3a5c;
+  --color-brand-light: #2a5a8c;
+  --color-accent: #c8a96e;
+}
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #1a1a1a;
+  background: #fafaf8;
+}
