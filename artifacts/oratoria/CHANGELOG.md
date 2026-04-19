@@ -6,6 +6,36 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.1.2] — 2026-04-19
+
+### Added
+- **Privacy policy** (`/legal/privacy`): fully rewritten with 9 sections covering the
+  site operator, data collected (event registration: phone/email/event/marketing
+  consent; newsletter: email only), purpose of each processing activity, storage &
+  security, third-party note (Brevo planned), cookies placeholder, user rights,
+  policy-update notice, and contact details.
+- **Terms of participation** (`/legal/terms`): fully rewritten with 9 sections covering
+  general info about the club, event details & per-event pricing, registration process,
+  cancellation/refund rules (48 h rule), conduct expectations, organizer rights, a
+  cross-reference to the privacy policy, update notice, and contacts.
+- **Cookie notice** (`components/CookieNotice.tsx`): minimal dismissible banner fixed
+  to the bottom of every public page. Russian text explains that technical cookies are
+  used now and analytics may follow later. Dismissed state is persisted in
+  `localStorage`. Links to `/legal/privacy`.
+
+### Updated
+- **Event registration form** (`components/EventCard.tsx`): marketing-consent checkbox
+  wording is now explicit ("анонсы … на указанный email. Согласие можно отозвать в
+  любой момент."). Added non-intrusive legal micro-text below the submit button with
+  links to `/legal/terms` and `/legal/privacy`.
+- **Newsletter form** (`components/NewsletterForm.tsx`): added consent helper text below
+  the email/subscribe row explaining the subscription purpose, linking to
+  `/legal/privacy`, and noting that opt-out is available at any time.
+- **Public layout** (`app/(public)/layout.tsx`): imports and renders `<CookieNotice />`
+  on all public pages.
+
+---
+
 ## [1.1.1] — 2026-04-19
 
 ### Added

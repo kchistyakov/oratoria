@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { subscribeToNewsletter, type NewsletterState } from "@/app/actions";
 
 const initialState: NewsletterState = { error: null, success: false };
@@ -43,6 +44,19 @@ export default function NewsletterForm() {
       {state.error && (
         <p className="text-red-300 text-sm mt-3 text-center">{state.error}</p>
       )}
+
+      {/* Consent helper text */}
+      <p className="text-xs text-white/40 mt-3 leading-relaxed">
+        Подписываясь, вы соглашаетесь получать анонсы мероприятий клуба.
+        Отписаться можно в любой момент. Подробнее —{" "}
+        <Link
+          href="/legal/privacy"
+          className="underline hover:text-white/60 transition-colors"
+        >
+          Политика конфиденциальности
+        </Link>
+        .
+      </p>
     </div>
   );
 }

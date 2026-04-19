@@ -20,6 +20,7 @@
  */
 
 import { useState, useActionState } from "react";
+import Link from "next/link";
 import { registerForEvent } from "@/app/actions";
 import type { RegistrationState } from "@/app/actions";
 
@@ -170,7 +171,8 @@ export default function EventCard({
                 className="mt-0.5 shrink-0 accent-[#2d6a4f] w-4 h-4"
               />
               <span className="text-xs text-[#6b6b6b] leading-relaxed">
-                Согласен(на) получать анонсы о похожих мероприятиях
+                Согласен(на) получать анонсы о похожих мероприятиях клуба на
+                указанный email. Согласие можно отозвать в любой момент.
               </span>
             </label>
 
@@ -196,6 +198,25 @@ export default function EventCard({
                 Отмена
               </button>
             </div>
+
+            {/* Legal helper text below the submit button */}
+            <p className="text-[10px] text-[#9b9b9b] leading-relaxed pt-0.5">
+              Нажимая «Подтвердить», вы соглашаетесь с{" "}
+              <Link
+                href="/legal/terms"
+                className="underline hover:text-[#4a4a4a] transition-colors"
+              >
+                условиями участия
+              </Link>{" "}
+              и подтверждаете ознакомление с{" "}
+              <Link
+                href="/legal/privacy"
+                className="underline hover:text-[#4a4a4a] transition-colors"
+              >
+                политикой конфиденциальности
+              </Link>
+              .
+            </p>
           </form>
         )}
       </div>
