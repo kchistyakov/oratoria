@@ -137,11 +137,20 @@ export async function updateRegistrationStatusAction(formData: FormData) {
   await requireAdmin();
   const id = formData.get("id") as string;
   const status = formData.get("status") as string;
+  // eventId is passed as a hidden field from the per-event detail page so we
+  // can revalidate that specific route in addition to the index.
+  const eventId = (formData.get("eventId") as string | null)?.trim() ?? "";
 
   if (!id || !VALID_STATUSES.includes(status)) return;
 
   await prisma.registration.update({ where: { id }, data: { status } });
   revalidatePath("/panel/registrations");
+  // Revalidate the specific event's registrations page if we know which one.
+  if (eventId) {
+    revalidatePath(`/panel/registrations/${eventId}`);
+  }
+  // Also revalidate the dashboard so the nearest-event count stays fresh.
+  revalidatePath("/panel");
 }
 
 export async function updateContentAction(formData: FormData): Promise<void> {
