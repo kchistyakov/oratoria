@@ -31,9 +31,13 @@ export async function GET(_req: NextRequest) {
   const rows = registrations.map((r) =>
     [
       r.id,
-      new Date(r.createdAt).toLocaleString("ru-RU"),
+      new Date(r.createdAt).toLocaleString("ru-RU", {
+        timeZone: "Europe/Moscow",
+      }),
       `"${r.event.title.replace(/"/g, '""')}"`,
-      new Date(r.event.dateTime).toLocaleString("ru-RU"),
+      new Date(r.event.dateTime).toLocaleString("ru-RU", {
+        timeZone: "Europe/Moscow",
+      }),
       r.phone,
       r.email,
       r.marketingConsent ? "Да" : "Нет",

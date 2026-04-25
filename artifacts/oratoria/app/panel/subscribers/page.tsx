@@ -39,7 +39,9 @@ export default async function SubscribersPage() {
                 >
                   <td className="px-5 py-3 text-[#1c1c1c]">{sub.email}</td>
                   <td className="px-5 py-3 text-[#6b6b6b]">
-                    {new Date(sub.createdAt).toLocaleDateString("ru-RU")}
+                    {new Date(sub.createdAt).toLocaleDateString("ru-RU", {
+                      timeZone: "Europe/Moscow",
+                    })}
                   </td>
                 </tr>
               ))}

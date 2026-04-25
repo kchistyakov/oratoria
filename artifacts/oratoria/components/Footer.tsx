@@ -65,7 +65,7 @@ export default function Footer() {
                   href="/legal/terms"
                   className="text-white/60 hover:text-[#74c69d] transition-colors"
                 >
-                  Условия использования
+                  Условия участия
                 </Link>
               </li>
             </ul>

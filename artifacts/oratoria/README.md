@@ -1,14 +1,17 @@
 # Оратория — сайт клуба публичных выступлений
 
-Публичный сайт клуба Оратория. Построен на Next.js 15 (App Router), TypeScript, Tailwind CSS v4 и Prisma + PostgreSQL.
+Публичный сайт и панель управления клуба «Оратория».  
+Построен на Next.js 15 (App Router), TypeScript, Tailwind CSS v4, Prisma + PostgreSQL.
 
 ## Технологии
 
-- **Framework**: Next.js 15 (App Router)
-- **Language**: TypeScript
-- **Styles**: Tailwind CSS v4
-- **ORM**: Prisma
-- **Database**: PostgreSQL
+| Стек | Версия / описание |
+|------|-------------------|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript |
+| Styles | Tailwind CSS v4 |
+| ORM | Prisma |
+| Database | PostgreSQL |
 
 ## Начало работы
 
@@ -25,7 +28,15 @@ pnpm install
 cp artifacts/oratoria/.env.example artifacts/oratoria/.env
 ```
 
-Отредактируйте `.env` и укажите реальный `DATABASE_URL`.
+Отредактируйте `.env`:
+
+| Переменная | Обязательна | Описание |
+|------------|-------------|----------|
+| `DATABASE_URL` | Да | Строка подключения к PostgreSQL |
+| `ADMIN_EMAIL` | Да | Email для входа в панель управления |
+| `ADMIN_PASSWORD` | Да | Пароль для входа в панель управления |
+| `ADMIN_SECRET` | Да | Случайная строка (32+ символа) для подписи сессионного токена |
+| `NODE_ENV` | — | `development` или `production` |
 
 ### 3. Применение схемы базы данных
 
@@ -33,11 +44,13 @@ cp artifacts/oratoria/.env.example artifacts/oratoria/.env
 pnpm --filter @workspace/oratoria run db:push
 ```
 
-### 4. Заполнение демонстрационными данными
+### 4. Заполнение демонстрационными данными (опционально)
 
 ```bash
 pnpm --filter @workspace/oratoria run db:seed
 ```
+
+Seed создаёт 4 мероприятия, 7 пунктов FAQ и все ключи `SiteContent` с текстами по умолчанию.
 
 ### 5. Запуск сервера разработки
 
@@ -47,27 +60,75 @@ pnpm --filter @workspace/oratoria run dev
 
 Сайт будет доступен по адресу `http://localhost:3000`.
 
+---
+
 ## Маршруты
+
+### Публичный сайт
 
 | Маршрут | Описание |
 |---------|----------|
 | `/` | Главная страница |
-| `/admin` | Панель администратора (заглушка) |
 | `/legal/privacy` | Политика конфиденциальности |
-| `/legal/terms` | Условия использования |
+| `/legal/terms` | Условия участия |
 
-## Prisma модели
+### Панель управления (`/panel`)
+
+Доступна только после входа. Вход — `/panel/login`.
+
+| Маршрут | Описание |
+|---------|----------|
+| `/panel` | Дашборд: счётчики, ближайшее мероприятие |
+| `/panel/events` | Список всех мероприятий |
+| `/panel/events/new` | Создание мероприятия |
+| `/panel/events/[id]` | Редактирование мероприятия |
+| `/panel/registrations` | Регистрации, сгруппированные по мероприятиям |
+| `/panel/registrations/[eventId]` | Регистрации на конкретное мероприятие + смена статуса |
+| `/panel/registrations/[eventId]/export` | CSV-выгрузка регистраций по мероприятию |
+| `/panel/registrations/export` | CSV-выгрузка всех регистраций |
+| `/panel/subscribers` | Подписчики рассылки |
+| `/panel/content` | Редактирование текстов сайта (SiteContent) |
+| `/panel/faq` | Редактирование пунктов FAQ |
+
+---
+
+## Prisma-модели
 
 | Модель | Назначение |
 |--------|-----------|
 | `Event` | Мероприятия клуба |
 | `Registration` | Записи участников на мероприятия |
 | `NewsletterSubscriber` | Подписчики рассылки |
-| `SiteContent` | Редактируемый контент сайта |
+| `SiteContent` | Редактируемый контент сайта (ключ → текст) |
 | `FaqItem` | Вопросы и ответы |
+
+---
+
+## Редактируемые ключи SiteContent
+
+| Ключ | Где используется |
+|------|-----------------|
+| `hero_title` | Главный заголовок Hero |
+| `hero_subtitle` | Подзаголовок Hero |
+| `slogan` | Слоган над заголовком |
+| `about_title` | Заголовок раздела «О клубе» |
+| `about_body` | Текст раздела «О клубе» |
+| `for_whom_title` | Заголовок «Для кого» |
+| `for_whom_body` | Текст «Для кого» |
+
+---
 
 ## Сборка для продакшена
 
 ```bash
 pnpm --filter @workspace/oratoria run build
 ```
+
+---
+
+## Архитектурные решения
+
+- **Временная зона**: все даты хранятся в UTC, отображаются в Europe/Moscow (UTC+3).
+- **Аутентификация**: HMAC-SHA256 токен, подписанный `ADMIN_SECRET`. Не требует внешних сервисов.
+- **Контент**: `SiteContent` — простая таблица ключ/значение. Изменения отображаются сразу.
+- **Stateless сессия**: сессионный токен — это HMAC-подпись фиксированной строки, не хранится в БД.

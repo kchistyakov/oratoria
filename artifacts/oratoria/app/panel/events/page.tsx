@@ -50,7 +50,12 @@ export default async function EventsPage() {
                     {event.isPublished ? "Опубликовано" : "Черновик"}
                   </span>
                   <span className="text-xs text-[#6b6b6b]">
-                    {event._count.registrations} регистраций
+                    {event._count.registrations === 1
+                      ? "1 регистрация"
+                      : event._count.registrations >= 2 &&
+                          event._count.registrations <= 4
+                        ? `${event._count.registrations} регистрации`
+                        : `${event._count.registrations} регистраций`}
                   </span>
                 </div>
                 <p className="font-semibold text-[#1c1c1c] leading-snug">
