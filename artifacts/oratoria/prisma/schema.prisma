@@ -58,9 +58,30 @@ model SiteContent {
 
 // FAQ items rendered in the FAQ section. sortOrder controls display order.
 model FaqItem {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   question    String
   answer      String
-  sortOrder   Int      @default(0)
-  isPublished Boolean  @default(true)
+  sortOrder   Int     @default(0)
+  isPublished Boolean @default(true)
+}
+
+// Benefit cards rendered in the "Зачем приходить?" section.
+// number is a display label (e.g. "01"). sortOrder controls card order.
+model Benefit {
+  id          String  @id @default(cuid())
+  number      String
+  title       String
+  body        String
+  sortOrder   Int     @default(0)
+  isPublished Boolean @default(true)
+}
+
+// Testimonial quotes rendered in the "Что говорят участники" section.
+model Testimonial {
+  id          String  @id @default(cuid())
+  name        String
+  role        String
+  quote       String
+  sortOrder   Int     @default(0)
+  isPublished Boolean @default(true)
 }

@@ -50,7 +50,7 @@ pnpm --filter @workspace/oratoria run db:push
 pnpm --filter @workspace/oratoria run db:seed
 ```
 
-Seed создаёт 4 мероприятия, 7 пунктов FAQ и все ключи `SiteContent` с текстами по умолчанию.
+Seed создаёт 4 мероприятия, 7 пунктов FAQ, 4 карточки преимуществ, 3 отзыва и все ключи `SiteContent` с текстами по умолчанию.
 
 ### 5. Запуск сервера разработки
 
@@ -88,6 +88,8 @@ pnpm --filter @workspace/oratoria run dev
 | `/panel/registrations/export` | CSV-выгрузка всех регистраций |
 | `/panel/subscribers` | Подписчики рассылки |
 | `/panel/content` | Редактирование текстов сайта (SiteContent) |
+| `/panel/benefits` | Редактирование карточек «Преимущества» |
+| `/panel/testimonials` | Редактирование отзывов участников |
 | `/panel/faq` | Редактирование пунктов FAQ |
 
 ---
@@ -101,6 +103,8 @@ pnpm --filter @workspace/oratoria run dev
 | `NewsletterSubscriber` | Подписчики рассылки |
 | `SiteContent` | Редактируемый контент сайта (ключ → текст) |
 | `FaqItem` | Вопросы и ответы |
+| `Benefit` | Карточки раздела «Зачем приходить?» |
+| `Testimonial` | Отзывы участников клуба |
 
 ---
 

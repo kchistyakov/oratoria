@@ -10,6 +10,8 @@ async function main() {
   await prisma.faqItem.deleteMany();
   await prisma.siteContent.deleteMany();
   await prisma.newsletterSubscriber.deleteMany();
+  await prisma.benefit.deleteMany();
+  await prisma.testimonial.deleteMany();
 
   await prisma.event.createMany({
     data: [
@@ -142,6 +144,68 @@ async function main() {
         key: "for_whom_body",
         title: "Текст «Для кого»",
         body: "Для тех, кто замирает, когда нужно высказаться на совещании. Для тех, кто хочет защитить диплом без дрожащего голоса. Для тех, кто просто хочет объясняться яснее — с коллегами, друзьями или начальником.",
+      },
+    ],
+  });
+
+  await prisma.benefit.createMany({
+    data: [
+      {
+        number: "01",
+        title: "Регулярная практика",
+        body: "На каждой встрече выступаешь сам. Не смотришь, как другие, — говоришь сам. Только так и растёшь.",
+        sortOrder: 1,
+        isPublished: true,
+      },
+      {
+        number: "02",
+        title: "Честная обратная связь",
+        body: "Тебе скажут, что получилось, а что нет. По-человечески, без жестокости и без лишней похвалы.",
+        sortOrder: 2,
+        isPublished: true,
+      },
+      {
+        number: "03",
+        title: "Безопасная среда",
+        body: "Никто не смеётся над чужими страхами. Все здесь были новичками — некоторые совсем недавно.",
+        sortOrder: 3,
+        isPublished: true,
+      },
+      {
+        number: "04",
+        title: "Заметный прогресс",
+        body: "После 3–4 встреч ты сам почувствуешь разницу. Голос станет увереннее. Слова — яснее. Проверено.",
+        sortOrder: 4,
+        isPublished: true,
+      },
+    ],
+  });
+
+  await prisma.testimonial.createMany({
+    data: [
+      {
+        name: "Мария К.",
+        role: "Менеджер проектов, 34 года",
+        quote:
+          "Пришла с трясущимися руками. Ушла с трясущимися, но счастливыми. На третью встречу руки уже не дрожали.",
+        sortOrder: 1,
+        isPublished: true,
+      },
+      {
+        name: "Дмитрий Л.",
+        role: "Разработчик, 28 лет",
+        quote:
+          "Программист, который говорит вслух — это было про меня. Теперь провожу демо без паники. Почти.",
+        sortOrder: 2,
+        isPublished: true,
+      },
+      {
+        name: "Анна С.",
+        role: "Врач, 41 год",
+        quote:
+          "Умела объяснять симптомы пациентам. Научилась говорить перед любой аудиторией. Оказывается, это разные навыки.",
+        sortOrder: 3,
+        isPublished: true,
       },
     ],
   });

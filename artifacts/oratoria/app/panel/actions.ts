@@ -226,3 +226,119 @@ export async function deleteFaqAction(id: string) {
   revalidatePath("/");
   redirect("/panel/faq");
 }
+
+// ─── Benefits ────────────────────────────────────────────────────────────────
+
+export async function createBenefitAction(formData: FormData): Promise<void> {
+  await requireAdmin();
+
+  const number = (formData.get("number") as string | null)?.trim() ?? "";
+  const title = (formData.get("title") as string | null)?.trim() ?? "";
+  const body = (formData.get("body") as string | null)?.trim() ?? "";
+  const sortOrderRaw = formData.get("sortOrder") as string | null;
+  const isPublished = formData.get("isPublished") !== null;
+
+  if (!title || !body) return;
+
+  const sortOrder = sortOrderRaw ? parseInt(sortOrderRaw, 10) : 0;
+
+  await prisma.benefit.create({
+    data: { number, title, body, sortOrder, isPublished },
+  });
+
+  revalidatePath("/panel/benefits");
+  revalidatePath("/");
+  redirect("/panel/benefits");
+}
+
+export async function updateBenefitAction(formData: FormData): Promise<void> {
+  await requireAdmin();
+
+  const id = formData.get("id") as string;
+  const number = (formData.get("number") as string | null)?.trim() ?? "";
+  const title = (formData.get("title") as string | null)?.trim() ?? "";
+  const body = (formData.get("body") as string | null)?.trim() ?? "";
+  const sortOrderRaw = formData.get("sortOrder") as string | null;
+  const isPublished = formData.get("isPublished") !== null;
+
+  if (!title || !body || !id) return;
+
+  const sortOrder = sortOrderRaw ? parseInt(sortOrderRaw, 10) : 0;
+
+  await prisma.benefit.update({
+    where: { id },
+    data: { number, title, body, sortOrder, isPublished },
+  });
+
+  revalidatePath("/panel/benefits");
+  revalidatePath("/");
+  redirect("/panel/benefits");
+}
+
+export async function deleteBenefitAction(id: string) {
+  await requireAdmin();
+  await prisma.benefit.delete({ where: { id } });
+  revalidatePath("/panel/benefits");
+  revalidatePath("/");
+  redirect("/panel/benefits");
+}
+
+// ─── Testimonials ─────────────────────────────────────────────────────────────
+
+export async function createTestimonialAction(
+  formData: FormData
+): Promise<void> {
+  await requireAdmin();
+
+  const name = (formData.get("name") as string | null)?.trim() ?? "";
+  const role = (formData.get("role") as string | null)?.trim() ?? "";
+  const quote = (formData.get("quote") as string | null)?.trim() ?? "";
+  const sortOrderRaw = formData.get("sortOrder") as string | null;
+  const isPublished = formData.get("isPublished") !== null;
+
+  if (!name || !quote) return;
+
+  const sortOrder = sortOrderRaw ? parseInt(sortOrderRaw, 10) : 0;
+
+  await prisma.testimonial.create({
+    data: { name, role, quote, sortOrder, isPublished },
+  });
+
+  revalidatePath("/panel/testimonials");
+  revalidatePath("/");
+  redirect("/panel/testimonials");
+}
+
+export async function updateTestimonialAction(
+  formData: FormData
+): Promise<void> {
+  await requireAdmin();
+
+  const id = formData.get("id") as string;
+  const name = (formData.get("name") as string | null)?.trim() ?? "";
+  const role = (formData.get("role") as string | null)?.trim() ?? "";
+  const quote = (formData.get("quote") as string | null)?.trim() ?? "";
+  const sortOrderRaw = formData.get("sortOrder") as string | null;
+  const isPublished = formData.get("isPublished") !== null;
+
+  if (!name || !quote || !id) return;
+
+  const sortOrder = sortOrderRaw ? parseInt(sortOrderRaw, 10) : 0;
+
+  await prisma.testimonial.update({
+    where: { id },
+    data: { name, role, quote, sortOrder, isPublished },
+  });
+
+  revalidatePath("/panel/testimonials");
+  revalidatePath("/");
+  redirect("/panel/testimonials");
+}
+
+export async function deleteTestimonialAction(id: string) {
+  await requireAdmin();
+  await prisma.testimonial.delete({ where: { id } });
+  revalidatePath("/panel/testimonials");
+  revalidatePath("/");
+  redirect("/panel/testimonials");
+}

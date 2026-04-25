@@ -8,6 +8,8 @@ const navLinks = [
   { href: "/panel/events", label: "Мероприятия" },
   { href: "/panel/registrations", label: "Регистрации" },
   { href: "/panel/content", label: "Тексты сайта" },
+  { href: "/panel/benefits", label: "Преимущества" },
+  { href: "/panel/testimonials", label: "Отзывы" },
   { href: "/panel/faq", label: "FAQ" },
   { href: "/panel/subscribers", label: "Подписчики" },
 ];

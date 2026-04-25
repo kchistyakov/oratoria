@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { Event, FaqItem } from "@prisma/client";
+import type { Benefit, Event, FaqItem, Testimonial } from "@prisma/client";
 import HeroSection from "@/components/sections/HeroSection";
 import EventsSection from "@/components/sections/EventsSection";
 import BenefitsSection from "@/components/sections/BenefitsSection";
@@ -26,44 +26,62 @@ const FALLBACK_CONTENT: ContentMap = {
 async function getPageData(): Promise<{
   events: Event[];
   faqItems: FaqItem[];
+  benefits: Benefit[];
+  testimonials: Testimonial[];
   content: ContentMap;
 }> {
   try {
-    const [events, faqItems, contentRows] = await Promise.all([
-      prisma.event.findMany({
-        where: { isPublished: true, dateTime: { gte: new Date() } },
-        orderBy: { dateTime: "asc" },
-        take: 4,
-      }),
-      prisma.faqItem.findMany({
-        where: { isPublished: true },
-        orderBy: { sortOrder: "asc" },
-      }),
-      prisma.siteContent.findMany(),
-    ]);
+    const [events, faqItems, benefits, testimonials, contentRows] =
+      await Promise.all([
+        prisma.event.findMany({
+          where: { isPublished: true, dateTime: { gte: new Date() } },
+          orderBy: { dateTime: "asc" },
+          take: 4,
+        }),
+        prisma.faqItem.findMany({
+          where: { isPublished: true },
+          orderBy: { sortOrder: "asc" },
+        }),
+        prisma.benefit.findMany({
+          where: { isPublished: true },
+          orderBy: { sortOrder: "asc" },
+        }),
+        prisma.testimonial.findMany({
+          where: { isPublished: true },
+          orderBy: { sortOrder: "asc" },
+        }),
+        prisma.siteContent.findMany(),
+      ]);
 
     const content: ContentMap = { ...FALLBACK_CONTENT };
     for (const row of contentRows) {
       content[row.key] = row.body;
     }
 
-    return { events, faqItems, content };
+    return { events, faqItems, benefits, testimonials, content };
   } catch {
-    return { events: [], faqItems: [], content: FALLBACK_CONTENT };
+    return {
+      events: [],
+      faqItems: [],
+      benefits: [],
+      testimonials: [],
+      content: FALLBACK_CONTENT,
+    };
   }
 }
 
 export default async function HomePage() {
-  const { events, faqItems, content } = await getPageData();
+  const { events, faqItems, benefits, testimonials, content } =
+    await getPageData();
   const nextEvent = events[0] ?? null;
 
   return (
     <>
       <HeroSection content={content} nextEvent={nextEvent} />
       <EventsSection events={events} />
-      <BenefitsSection />
+      <BenefitsSection benefits={benefits} />
       <AboutSection content={content} />
-      <TestimonialsSection />
+      <TestimonialsSection testimonials={testimonials} />
       <FaqSection items={faqItems} />
       <NewsletterSection />
     </>
