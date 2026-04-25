@@ -18,6 +18,12 @@ export default async function RegistrationsPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-[#1c1c1c]">Регистрации</h1>
+        <a
+          href="/panel/registrations/export"
+          className="border border-slate-200 bg-white text-[#1c1c1c] px-4 py-2 rounded-xl text-sm font-medium hover:border-slate-300 transition-colors"
+        >
+          Экспорт всех CSV
+        </a>
       </div>
 
       {events.length === 0 ? (

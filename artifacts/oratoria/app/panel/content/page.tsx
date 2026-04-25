@@ -101,7 +101,8 @@ export default async function ContentPage({
           <input
             name="key"
             type="text"
-            placeholder="Ключ (например: hero_image_url)"
+            required
+            placeholder="Ключ (например: hero_image_url) *"
             className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#2d6a4f] transition-colors"
           />
           <input

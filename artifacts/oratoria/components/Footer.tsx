@@ -35,7 +35,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://t.me/@mashaclubspb"
+                  href="https://t.me/mashaclubspb"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[#74c69d] transition-colors"

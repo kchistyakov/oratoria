@@ -8,12 +8,22 @@ export default async function SubscribersPage() {
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-[#1c1c1c]">
-          Подписчики рассылки
-        </h1>
-        <span className="text-sm text-[#6b6b6b]">
-          Всего: {subscribers.length}
-        </span>
+        <div>
+          <h1 className="text-2xl font-bold text-[#1c1c1c]">
+            Подписчики рассылки
+          </h1>
+          <p className="text-sm text-[#6b6b6b] mt-1">
+            Всего: {subscribers.length}
+          </p>
+        </div>
+        {subscribers.length > 0 && (
+          <a
+            href="/panel/subscribers/export"
+            className="border border-slate-200 bg-white text-[#1c1c1c] px-4 py-2 rounded-xl text-sm font-medium hover:border-slate-300 transition-colors"
+          >
+            Экспорт CSV
+          </a>
+        )}
       </div>
 
       {subscribers.length === 0 ? (
