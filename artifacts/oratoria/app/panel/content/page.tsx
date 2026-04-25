@@ -4,11 +4,16 @@ import { updateContentAction } from "../actions";
 const CONTENT_DESCRIPTIONS: Record<string, string> = {
   hero_title: "Главный заголовок (Hero)",
   hero_subtitle: "Подзаголовок (Hero)",
-  slogan: "Слоган клуба (верхняя строка Hero)",
+  slogan: "Верхняя строка Hero (слоган / геолокация)",
+  hero_image_url: "Фото в Hero — вставьте URL изображения (оставьте пустым, чтобы скрыть)",
+  events_subtitle: "Подпись под заголовком «Ближайшие события»",
   about_title: 'Заголовок раздела "О клубе"',
   about_body: 'Текст раздела "О клубе"',
-  for_whom_title: 'Заголовок раздела "Для кого"',
-  for_whom_body: 'Текст раздела "Для кого"',
+  for_whom_title: 'Заголовок "Для кого"',
+  for_whom_body: 'Текст "Для кого"',
+  newsletter_title: "Заголовок раздела подписки",
+  newsletter_body: "Подпись под заголовком раздела подписки",
+  og_image_url: "OG-изображение для соцсетей (URL, используется при шаринге ссылки)",
 };
 
 export default async function ContentPage({

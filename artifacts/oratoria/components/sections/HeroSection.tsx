@@ -10,11 +10,13 @@ interface Props {
 
 export default function HeroSection({ content, nextEvent }: Props) {
   const title =
-    content.hero_title ?? "Клуб, где боятся все —\nи говорят всё равно";
+    content.hero_title ?? "Клуб, где боятся все — и говорят всё равно";
   const subtitle =
     content.hero_subtitle ??
     "Оратория — место, где публичные выступления перестают быть страшными. Приходи. Скажешь что-нибудь вслух — уже молодец.";
-  const slogan = content.slogan ?? "Тренируй речь. Говори уверенно.";
+  const slogan =
+    content.slogan ?? "Клуб публичных выступлений · Санкт-Петербург";
+  const heroImageUrl = content.hero_image_url?.trim() ?? "";
 
   return (
     <section className="bg-[#f8f4ee] py-20 md:py-28 px-4">
@@ -39,7 +41,7 @@ export default function HeroSection({ content, nextEvent }: Props) {
             href="#events"
             className="bg-[#2d6a4f] text-white px-8 py-3 rounded-full font-medium hover:bg-[#40916c] transition-colors"
           >
-            Ближайшие события
+            Ближайшие встречи
           </a>
           <a
             href="#about"
@@ -49,10 +51,21 @@ export default function HeroSection({ content, nextEvent }: Props) {
           </a>
         </div>
 
+        {heroImageUrl && (
+          <div className="mt-10 mx-auto max-w-lg rounded-2xl overflow-hidden shadow-sm border border-[#e9dcc9]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={heroImageUrl}
+              alt="Оратория"
+              className="w-full h-auto object-cover"
+            />
+          </div>
+        )}
+
         {nextEvent && (
-          <div className="mt-14 inline-block text-left bg-white rounded-2xl px-6 py-5 shadow-sm border border-[#e9dcc9] max-w-sm">
+          <div className="mt-10 inline-block text-left bg-white rounded-2xl px-6 py-5 shadow-sm border border-[#e9dcc9] max-w-sm">
             <p className="text-xs font-medium text-[#40916c] uppercase tracking-widest mb-2">
-              Ближайшее мероприятие
+              Ближайшая встреча
             </p>
             <p className="font-semibold text-[#1c1c1c] mb-1 leading-snug">
               {nextEvent.title}

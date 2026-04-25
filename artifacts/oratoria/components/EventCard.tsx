@@ -84,10 +84,10 @@ export default function EventCard({
         {state.success && (
           <div className="rounded-xl bg-[#d8f3dc] border border-[#b7e4c7] px-4 py-4 text-center">
             <p className="text-[#2d6a4f] font-semibold text-sm mb-1">
-              Вы зарегистрированы!
+              Записано! Ждём вас.
             </p>
             <p className="text-[#40916c] text-xs">
-              Напишем на вашу почту с деталями.
+              Подтверждение придёт на вашу почту.
             </p>
           </div>
         )}
@@ -96,10 +96,10 @@ export default function EventCard({
         {state.duplicate && (
           <div className="rounded-xl bg-[#f0faf2] border border-[#74c69d] px-4 py-4 text-center">
             <p className="text-[#2d6a4f] text-sm font-medium">
-              Вы уже зарегистрированы на это мероприятие.
+              Вы уже записаны на эту встречу.
             </p>
             <p className="text-[#40916c] text-xs mt-1">
-              Если нужна помощь — напишите нам в Telegram.
+              Если что-то изменилось — напишите нам в Telegram.
             </p>
           </div>
         )}
@@ -188,7 +188,7 @@ export default function EventCard({
                 disabled={pending}
                 className="flex-1 bg-[#2d6a4f] text-white py-2.5 rounded-full text-sm font-medium hover:bg-[#40916c] transition-colors disabled:opacity-60"
               >
-                {pending ? "Отправляю…" : "Подтвердить"}
+                {pending ? "Отправляю…" : "Подтвердить запись"}
               </button>
               <button
                 type="button"
